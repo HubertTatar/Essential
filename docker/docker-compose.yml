@@ -7,7 +7,7 @@ services:
   kafka-cluster:
     image: landoop/fast-data-dev:latest
     environment: 
-      CONNECT_HEAP: 3G
+      CONNECT_HEAP: 1G
       ADV_HOST: 127.0.0.1
       RUNTESTS: 0
     ports:
@@ -17,11 +17,23 @@ services:
       - 9581-9585:9581-9585
       - 9092:9092
   
-  
+
   elasticsearch:
-    image: nshou/elasticsearch-kibana:latest
-    ports: 
-      - 9200:9200
-      - 5601:5601
-    environment:
-      ES_JAVA_OPTS: "-Xmx1g -Xms1g"         
+      image: itzg/elasticsearch:2.4.3
+      environment:
+        ES_JAVA_OPTS: "-Xmx1g -Xms1g"
+        PLUGINS: appbaseio/dejavu
+        OPTS: -Dindex.number_of_shards=1 -Dindex.number_of_replicas=0
+      ports:
+        - 9200:9200
+
+
+
+  postgres:
+    image: postgres:10-alpine
+    environment: 
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - 5432:5432
