@@ -151,22 +151,54 @@ object SelfTypeUser {
 //clashing traits
 trait FormalGreeting {
   def hello(): String
+//  def time(): Int
 }
 
 trait InformalGreeting {
   def hello(): String
+//  def time(): String
 }
 
 class Greeter extends FormalGreeting with InformalGreeting {
   override def hello() = "hi"
+
+//  override def time() = 1
 }
 
 object GreeterClash {
   def main(args: Array[String]): Unit = {
     val a = new Greeter()
     println(a.hello())
+//    println(a.time())
   }
 }
+
+
+trait A {
+  def hello(): String = "A"
+}
+
+trait B {
+  def hello(): String = "B"
+}
+
+object SameSigDiffRetMixin extends B with A {
+
+
+  override def hello() = super[A].hello()
+
+  def helloA() = super[A].hello()
+  def helloB() = super[B].hello()
+
+  def main(args: Array[String]): Unit = {
+//    println(hello())
+    println(hello())
+    println(helloA)
+    println(helloB)
+  }
+}
+
+
 
 
 
