@@ -121,3 +121,75 @@ object PersisterExmaple {
     memoryPerister.persist(234)
   }
 }
+
+//self types vs inheritance
+trait DB {
+  def connect(): Unit = {
+    println("connected")
+  }
+
+  def drop(): Unit = {
+    println("dropped")
+  }
+
+  def close(): Unit = {
+    println("closed")
+  }
+}
+
+trait UserDB extends DB {
+  def createUser(name: String): Unit = {
+    connect()
+    try {
+      println("created")
+    } finally {
+      close()
+    }
+  }
+
+  def getUser(name: String): Unit = {
+    connect()
+    try {
+      println("getting")
+    } finally {
+      close()
+    }
+  }
+}
+
+
+trait UserService extends UserDB {
+  def bad() = {
+    drop()
+  }
+}
+
+//fix shit with self types
+trait UserDb {
+  this: DB =>
+
+  def createUser(name: String): Unit = {
+    connect()
+    try {
+      println("created")
+    } finally {
+      close()
+    }
+  }
+
+  def getUser(name: String): Unit = {
+    connect()
+    try {
+      println("getting")
+    } finally {
+      close()
+    }
+  }
+}
+
+trait UserService2 {
+  this: UserDb =>
+  def bad() = {
+    //drop() cant do that
+  }
+}
